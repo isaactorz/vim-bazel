@@ -69,18 +69,8 @@ function! bazel#Run(arguments, ...) abort
   " TODO: Handle executable with spaces such as "bazel --bazelrc=foo".
   let l:executable = get(l:config, 'executable', 'bazel')
 
-  if a:arguments[0] == "build"
-    set errorformat=ERROR:\ %f:%l:%c:%m
-    set errorformat+=%f:%l:%c:%m
-
-    " Ignore build output lines starting with INFO:, Loading:, or [
-    set errorformat+=%-GINFO:\ %.%#
-    set errorformat+=%-GLoading:\ %.%#
-    set errorformat+=%-G[%.%#
-  else
-    let l:syscall = maktaba#syscall#Create([l:executable] + a:arguments)
-    call l:syscall.CallForeground(1, 0)
-  endif
+  let l:syscall = maktaba#syscall#Create([l:executable] + a:arguments)
+  call l:syscall.CallForeground(1, 0)
   " Note: Intentionally doesn't check v:shell_error.
   " Errors are printed on console by bazel, and visible until explicitly
   " dismissed because we use CallForeground in pause mode.
